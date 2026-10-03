@@ -1,0 +1,300 @@
+{% extends 'base.html' %}
+
+{% block title %}ShineClean - Professional Home Cleaning Services{% endblock %}
+
+{% block extra_css %}
+<style>
+    .hero-section {
+        background: linear-gradient(135deg, rgba(13, 110, 253, 0.9) 0%, rgba(79, 172, 254, 0.85) 100%),
+                    url('https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=1600&q=80');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        min-height: 85vh;
+        display: flex;
+        align-items: center;
+    }
+    .feature-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: none;
+        border-radius: 16px;
+    }
+    .feature-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    }
+    .feature-icon {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        background: linear-gradient(135deg, #0d6efd 0%, #4facfe 100%);
+    }
+    .service-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: none;
+        border-radius: 16px;
+        overflow: hidden;
+    }
+    .service-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 16px 32px rgba(0, 0, 0, 0.12);
+    }
+    .service-card .card-header {
+        background: linear-gradient(135deg, #0d6efd 0%, #4facfe 100%);
+        padding: 2rem 1rem;
+    }
+    .testimonial-card {
+        border: none;
+        border-radius: 16px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+        height: 100%;
+    }
+    .cta-banner {
+        background: linear-gradient(135deg, #0d6efd 0%, #4facfe 100%);
+        border-radius: 20px;
+    }
+    .star-rating {
+        color: #ffc107;
+    }
+    .btn-hero {
+        padding: 0.85rem 2rem;
+        font-weight: 600;
+        border-radius: 50px;
+        transition: all 0.3s ease;
+    }
+    .btn-hero:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+    .section-heading {
+        position: relative;
+        display: inline-block;
+    }
+    .section-heading::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 4px;
+        background: linear-gradient(90deg, #0d6efd, #4facfe);
+        border-radius: 2px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<section class="hero-section text-white">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8 mx-auto text-center">
+                <h1 class="display-3 fw-bold mb-4">Professional Home Cleaning Services You Can Trust</h1>
+                <p class="lead fs-4 mb-5 text-white-50">Experience the difference of a spotless home. Our expert cleaners deliver exceptional results with eco-friendly products, flexible scheduling, and a 100% satisfaction guarantee.</p>
+                <div class="d-flex flex-wrap gap-3 justify-content-center">
+                    {% if current_user.is_authenticated %}
+                        <a href="{{ url_for('services') }}" class="btn btn-light text-primary btn-hero">
+                            <i class="fas fa-calendar-check me-2"></i>Book Now
+                        </a>
+                    {% else %}
+                        <a href="{{ url_for('register') }}" class="btn btn-light text-primary btn-hero">
+                            <i class="fas fa-calendar-check me-2"></i>Book Now
+                        </a>
+                    {% endif %}
+                    <a href="#services" class="btn btn-outline-light btn-hero">
+                        <i class="fas fa-list me-2"></i>View Services
+                    </a>
+                </div>
+                <div class="d-flex flex-wrap justify-content-center gap-5 mt-5 pt-4">
+                    <div class="text-center">
+                        <div class="display-5 fw-bold">5000+</div>
+                        <div class="text-white-50">Happy Clients</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="display-5 fw-bold">98%</div>
+                        <div class="text-white-50">Satisfaction Rate</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="display-5 fw-bold">15+</div>
+                        <div class="text-white-50">Years Experience</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5 bg-soft">
+    <div class="container py-5">
+        <div class="text-center mb-5 pb-4">
+            <h2 class="section-heading fw-bold mb-3">Why Choose Us</h2>
+            <p class="text-muted mt-4 fs-5">We're committed to delivering the highest quality cleaning services with unmatched reliability and care.</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-3">
+                <div class="feature-card card h-100 text-center p-5 shadow-sm">
+                    <div class="feature-icon text-white">
+                        <i class="fas fa-user-tie fa-2x"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3">Experienced Cleaners</h4>
+                    <p class="text-muted mb-0">Our professionally trained and vetted cleaners bring years of expertise to every job.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="feature-card card h-100 text-center p-5 shadow-sm">
+                    <div class="feature-icon text-white">
+                        <i class="fas fa-leaf fa-2x"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3">Eco-Friendly Products</h4>
+                    <p class="text-muted mb-0">Safe, non-toxic cleaning solutions that protect your family, pets, and the environment.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="feature-card card h-100 text-center p-5 shadow-sm">
+                    <div class="feature-icon text-white">
+                        <i class="fas fa-clock fa-2x"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3">Flexible Scheduling</h4>
+                    <p class="text-muted mb-0">Book at your convenience with weekly, bi-weekly, monthly, or one-time options.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="feature-card card h-100 text-center p-5 shadow-sm">
+                    <div class="feature-icon text-white">
+                        <i class="fas fa-award fa-2x"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3">100% Satisfaction Guarantee</h4>
+                    <p class="text-muted mb-0">Not completely satisfied? We'll re-clean for free until you're thrilled with the results.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="services" class="py-5">
+    <div class="container py-5">
+        <div class="text-center mb-5 pb-4">
+            <h2 class="section-heading fw-bold mb-3">Our Services</h2>
+            <p class="text-muted mt-4 fs-5">Choose from our comprehensive range of professional cleaning services tailored to your needs.</p>
+        </div>
+        <div class="row g-4">
+            {% for service in services %}
+            <div class="col-md-6 col-lg-4">
+                <div class="service-card card h-100 shadow-sm">
+                    <div class="card-header text-center border-0">
+                        <div class="text-white">
+                            {% if service.name == 'Regular House Cleaning' %}
+                                <i class="fas fa-home fa-3x mb-3"></i>
+                            {% elif service.name == 'Deep Cleaning' %}
+                                <i class="fas fa-spray-can fa-3x mb-3"></i>
+                            {% elif service.name == 'Move In/Out Cleaning' %}
+                                <i class="fas fa-truck fa-3x mb-3"></i>
+                            {% elif service.name == 'Kitchen & Bathroom' %}
+                                <i class="fas fa-bath fa-3x mb-3"></i>
+                            {% elif service.name == 'Window Cleaning' %}
+                                <i class="fas fa-window-maximize fa-3x mb-3"></i>
+                            {% elif service.name == 'Carpet Cleaning' %}
+                                <i class="fas fa-border-all fa-3x mb-3"></i>
+                            {% else %}
+                                <i class="fas fa-broom fa-3x mb-3"></i>
+                            {% endif %}
+                            <h4 class="fw-bold mb-0">{{ service.name }}</h4>
+                        </div>
+                    </div>
+                    <div class="card-body p-4 d-flex flex-column">
+                        <div class="mb-3">
+                            <span class="h3 fw-bold text-primary">₹{{ "%.0f"|format(service.price) }}</span>
+                            {% if service.duration %}
+                            <span class="text-muted ms-1">/ {{ service.duration }}</span>
+                            {% endif %}
+                        </div>
+                        <p class="text-muted flex-grow-1">{{ service.description }}</p>
+                        {% if current_user.is_authenticated %}
+                            <a href="{{ url_for('booking', service_id=service.id) }}" class="btn btn-primary w-100 mt-3 rounded-pill py-2">
+                                <i class="fas fa-calendar-check me-2"></i>Book Now
+                            </a>
+                        {% else %}
+                            <a href="{{ url_for('register') }}" class="btn btn-primary w-100 mt-3 rounded-pill py-2">
+                                <i class="fas fa-calendar-check me-2"></i>Book Now
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-5">
+            <a href="{{ url_for('services') }}" class="btn btn-outline-primary btn-lg rounded-pill px-5 py-3">
+                View All Services <i class="fas fa-arrow-right ms-2"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<section class="py-5 bg-soft">
+    <div class="container py-5">
+        <div class="text-center mb-5 pb-4">
+            <h2 class="section-heading fw-bold mb-3">What Our Clients Say</h2>
+            <p class="text-muted mt-4 fs-5">Don't just take our word for it. Hear from our satisfied customers.</p>
+        </div>
+        <div class="row g-4">
+            {% for testimonial in testimonials %}
+            <div class="col-md-6 col-lg-4">
+                <div class="testimonial-card card p-5 h-100">
+                    <div class="star-rating mb-3 fs-5">
+                        {% for i in range(testimonial.rating) %}
+                            <i class="fas fa-star"></i>
+                        {% endfor %}
+                        {% for i in range(5 - testimonial.rating) %}
+                            <i class="far fa-star"></i>
+                        {% endfor %}
+                    </div>
+                    <p class="text-muted fs-5 mb-4 fst-italic">"{{ testimonial.message }}"</p>
+                    <div class="d-flex align-items-center">
+                        <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3" style="width: 56px; height: 56px;">
+                            <i class="fas fa-user fa-xl"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold mb-0">{{ testimonial.name }}</h6>
+                            {% if testimonial.role %}
+                            <small class="text-muted">{{ testimonial.role }}</small>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container py-5">
+        <div class="cta-banner text-white p-5 p-md-6 p-lg-7">
+            <div class="row align-items-center g-4">
+                <div class="col-lg-8 text-center text-lg-start">
+                    <h2 class="display-5 fw-bold mb-3">Ready for a Cleaner Home?</h2>
+                    <p class="lead text-white-50 mb-4 mb-lg-0">Book your first cleaning today and enjoy a sparkling clean home without lifting a finger.</p>
+                </div>
+                <div class="col-lg-4 text-center text-lg-end">
+                    {% if current_user.is_authenticated %}
+                        <a href="{{ url_for('services') }}" class="btn btn-light text-primary btn-lg rounded-pill px-5 py-3 fw-bold">
+                            Get Started <i class="fas fa-arrow-right ms-2"></i>
+                        </a>
+                    {% else %}
+                        <a href="{{ url_for('register') }}" class="btn btn-light text-primary btn-lg rounded-pill px-5 py-3 fw-bold">
+                            Get Started <i class="fas fa-arrow-right ms-2"></i>
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

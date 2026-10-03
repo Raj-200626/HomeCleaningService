@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+
+{% block title %}Users Management{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <h2 class="mb-1" style="color: #1e3a5f; font-weight: 700;">Users Management</h2>
+    <p class="text-muted mb-0">View and manage all registered customers.</p>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card stat-card h-100">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="stat-icon me-3" style="background-color: #e3f2fd; color: #1976d2;">
+                        <i class="bi bi-people-fill"></i>
+                    </div>
+                    <div>
+                        <h6 class="text-muted mb-1" style="font-size: 0.85rem;">Total Users</h6>
+                        <h3 class="mb-0" style="font-weight: 700; color: #1e3a5f;">{{ users|length }}</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card stat-card h-100">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="stat-icon me-3" style="background-color: #e8f5e9; color: #388e3c;">
+                        <i class="bi bi-calendar-check-fill"></i>
+                    </div>
+                    <div>
+                        <h6 class="text-muted mb-1" style="font-size: 0.85rem;">With Bookings</h6>
+                        <h3 class="mb-0" style="font-weight: 700; color: #1e3a5f;">{{ users_with_bookings if users_with_bookings is defined else '—' }}</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card stat-card h-100">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="stat-icon me-3" style="background-color: #fff3cd; color: #ff9800;">
+                        <i class="bi bi-geo-alt-fill"></i>
+                    </div>
+                    <div>
+                        <h6 class="text-muted mb-1" style="font-size: 0.85rem;">With Address</h6>
+                        <h3 class="mb-0" style="font-weight: 700; color: #1e3a5f;">
+                            {% set addr_count = namespace(value=0) %}
+                            {% for u in users %}{% if u.address %}{% set addr_count.value = addr_count.value + 1 %}{% endif %}{% endfor %}{{ addr_count.value }}
+                        </h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card table-card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0" style="color: #1e3a5f; font-weight: 600;">
+            <i class="bi bi-people-fill me-2"></i>All Customers
+            <span class="badge bg-secondary ms-2" style="font-size: 0.75rem;">{{ users|length }}</span>
+        </h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>City / Address</th>
+                        <th>Bookings</th>
+                        <th>Joined</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if users %}
+                        {% for user in users %}
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="bg-primary bg-opacity-10 rounded-circle me-2" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                                            <span class="text-primary" style="font-size: 0.9rem; font-weight: 600;">
+                                                {{ user.full_name[0] if user.full_name else '?' }}
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <p class="mb-0 fw-medium" style="font-size: 0.9rem;">{{ user.full_name }}</p>
+                                            <p class="mb-0 text-muted" style="font-size: 0.75rem;">ID: #{{ user.id }}</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <a href="mailto:{{ user.email }}" style="font-size: 0.9rem; color: #1976d2;">{{ user.email }}</a>
+                                </td>
+                                <td>
+                                    {% if user.phone %}
+                                        <a href="tel:{{ user.phone }}" style="font-size: 0.9rem;">{{ user.phone }}</a>
+                                    {% else %}
+                                        <span class="text-muted" style="font-size: 0.85rem;"><em>N/A</em></span>
+                                    {% endif %}
+                                </td>
+                                <td style="max-width: 220px;">
+                                    {% if user.address or user.city %}
+                                        <p class="mb-0 fw-medium" style="font-size: 0.85rem;">
+                                            {{ user.city if user.city else '' }}
+                                        </p>
+                                        <p class="mb-0 text-muted" style="font-size: 0.8rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                            {{ user.address[:60] if user.address else '' }}{% if user.address and user.address|length > 60 %}...{% endif %}
+                                        </p>
+                                    {% else %}
+                                        <span class="text-muted" style="font-size: 0.85rem;"><em>No address</em></span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% set booking_count = user.bookings|length if user.bookings else 0 %}
+                                    {% if booking_count > 0 %}
+                                        <span class="badge bg-primary" style="padding: 0.4rem 0.7rem; border-radius: 20px; font-size: 0.75rem;">
+                                            <i class="bi bi-calendar-check me-1"></i>{{ booking_count }} booking{% if booking_count != 1 %}s{% endif %}
+                                        </span>
+                                    {% else %}
+                                        <span class="badge bg-secondary" style="padding: 0.4rem 0.7rem; border-radius: 20px; font-size: 0.75rem;">
+                                            No bookings
+                                        </span>
+                                    {% endif %}
+                                </td>
+                                <td style="font-size: 0.85rem;">
+                                    {% if user.created_at %}
+                                        {{ user.created_at.strftime('%b %d, %Y') }}
+                                        <br><span class="text-muted">{{ user.created_at.strftime('%I:%M %p') }}</span>
+                                    {% else %}
+                                        <span class="text-muted">N/A</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="6" class="text-center py-5 text-muted">
+                                <i class="bi bi-people mb-3" style="font-size: 2.5rem; opacity: 0.5;"></i>
+                                <p class="mb-0">No registered users yet.</p>
+                            </td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

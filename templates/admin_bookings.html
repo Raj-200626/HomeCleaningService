@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+
+{% block title %}Bookings Management{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <h2 class="mb-1" style="color: #1e3a5f; font-weight: 700;">Bookings Management</h2>
+    <p class="text-muted mb-0">View and manage all customer bookings.</p>
+</div>
+
+<div class="card table-card mb-4">
+    <div class="card-body pt-4 pb-2">
+        <ul class="nav nav-pills flex-wrap" role="tablist" style="gap: 0.5rem;">
+            <li class="nav-item">
+                <a class="nav-link {% if status_filter == 'all' %}active{% endif %}" 
+                   href="{{ url_for('admin_bookings', status='all') }}"
+                   style="border-radius: 30px; padding: 0.5rem 1.2rem;">
+                    <i class="bi bi-grid-3x3-gap-fill me-1"></i> All
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if status_filter == 'pending' %}active{% endif %} {% if status_filter == 'pending' %}btn-warning{% endif %}" 
+                   href="{{ url_for('admin_bookings', status='pending') }}"
+                   style="border-radius: 30px; padding: 0.5rem 1.2rem; {% if status_filter == 'pending' %}background-color: #ffc107 !important; color: #000 !important;{% endif %}">
+                    <i class="bi bi-clock-fill me-1"></i> Pending
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if status_filter == 'confirmed' %}active{% endif %}" 
+                   href="{{ url_for('admin_bookings', status='confirmed') }}"
+                   style="border-radius: 30px; padding: 0.5rem 1.2rem; {% if status_filter == 'confirmed' %}background-color: #17a2b8 !important;{% endif %}">
+                    <i class="bi bi-check-circle-fill me-1"></i> Confirmed
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if status_filter == 'completed' %}active{% endif %}" 
+                   href="{{ url_for('admin_bookings', status='completed') }}"
+                   style="border-radius: 30px; padding: 0.5rem 1.2rem; {% if status_filter == 'completed' %}background-color: #28a745 !important;{% endif %}">
+                    <i class="bi bi-check2-circle me-1"></i> Completed
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if status_filter == 'cancelled' %}active{% endif %}" 
+                   href="{{ url_for('admin_bookings', status='cancelled') }}"
+                   style="border-radius: 30px; padding: 0.5rem 1.2rem; {% if status_filter == 'cancelled' %}background-color: #dc3545 !important;{% endif %}">
+                    <i class="bi bi-x-circle-fill me-1"></i> Cancelled
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<div class="card table-card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0" style="color: #1e3a5f; font-weight: 600;">
+            <i class="bi bi-list-ul me-2"></i>
+            {% if status_filter == 'all' %}All Bookings{% else %}{{ status_filter|capitalize }} Bookings{% endif %}
+            <span class="badge bg-secondary ms-2" style="font-size: 0.75rem;">{{ bookings|length }}</span>
+        </h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Customer</th>
+                        <th>Service</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Status</th>
+                        <th>Price</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if bookings %}
+                        {% for booking in bookings %}
+                            <tr>
+                                <td><strong>#{{ booking.id }}</strong></td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="bg-primary bg-opacity-10 rounded-circle me-2" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">
+                                            <span class="text-primary" style="font-size: 0.8rem; font-weight: 600;">
+                                                {{ booking.customer.full_name[0] if booking.customer else '?' }}
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <p class="mb-0 fw-medium" style="font-size: 0.9rem;">{{ booking.customer.full_name if booking.customer else 'N/A' }}</p>
+                                            <p class="mb-0 text-muted" style="font-size: 0.75rem;">{{ booking.customer.phone if booking.customer else '' }}</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="fw-medium" style="font-size: 0.9rem;">{{ booking.service.name if booking.service else 'N/A' }}</span>
+                                    {% if booking.address %}
+                                        <br><span class="text-muted" style="font-size: 0.75rem;">{{ booking.city }}{% if booking.city %}, {% endif %}{{ booking.address[:40] }}{% if booking.address|length > 40 %}...{% endif %}</span>
+                                    {% endif %}
+                                </td>
+                                <td><span style="font-size: 0.9rem;">{{ booking.booking_date.strftime('%b %d, %Y') }}</span></td>
+                                <td><span style="font-size: 0.9rem;">{{ booking.booking_time.strftime('%I:%M %p') }}</span></td>
+                                <td>
+                                    <span class="badge badge-{{ booking.status }}" style="padding: 0.4rem 0.7rem; border-radius: 20px; font-size: 0.75rem; font-weight: 500; text-transform: capitalize;">
+                                        {{ booking.status }}
+                                    </span>
+                                </td>
+                                <td><strong style="color: #1e3a5f;">₹{{ "%.0f"|format(booking.total_price) }}</strong></td>
+                                <td>
+                                    <div class="d-flex flex-wrap gap-1">
+                                        {% if booking.status != 'pending' %}
+                                            <form method="POST" action="{{ url_for('update_booking_status', booking_id=booking.id, status='pending') }}">
+                                                <button type="submit" class="btn btn-sm btn-outline-warning" style="border-radius: 6px; font-size: 0.75rem; padding: 0.25rem 0.5rem;" title="Mark as Pending">
+                                                    <i class="bi bi-clock"></i>
+                                                </button>
+                                            </form>
+                                        {% endif %}
+                                        {% if booking.status != 'confirmed' %}
+                                            <form method="POST" action="{{ url_for('update_booking_status', booking_id=booking.id, status='confirmed') }}">
+                                                <button type="submit" class="btn btn-sm btn-outline-info" style="border-radius: 6px; font-size: 0.75rem; padding: 0.25rem 0.5rem;" title="Confirm">
+                                                    <i class="bi bi-check-circle"></i>
+                                                </button>
+                                            </form>
+                                        {% endif %}
+                                        {% if booking.status != 'completed' %}
+                                            <form method="POST" action="{{ url_for('update_booking_status', booking_id=booking.id, status='completed') }}">
+                                                <button type="submit" class="btn btn-sm btn-outline-success" style="border-radius: 6px; font-size: 0.75rem; padding: 0.25rem 0.5rem;" title="Mark as Completed">
+                                                    <i class="bi bi-check2-circle"></i>
+                                                </button>
+                                            </form>
+                                        {% endif %}
+                                        {% if booking.status != 'cancelled' %}
+                                            <form method="POST" action="{{ url_for('update_booking_status', booking_id=booking.id, status='cancelled') }}">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger" style="border-radius: 6px; font-size: 0.75rem; padding: 0.25rem 0.5rem;" title="Cancel" onclick="return confirm('Are you sure you want to cancel this booking?');">
+                                                    <i class="bi bi-x-circle"></i>
+                                                </button>
+                                            </form>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="8" class="text-center py-5 text-muted">
+                            <i class="bi bi-calendar-x mb-3" style="font-size: 2.5rem; opacity: 0.5;"></i>
+                            <p class="mb-0">No {% if status_filter != 'all' %}{{ status_filter }}{% endif %} bookings found.</p>
+                        </td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+{% block title %}Book {{ service.name }} - SparkleClean{% endblock %}
+{% block content %}
+<div class="row justify-content-center py-4">
+    <div class="col-lg-10">
+        <div class="mb-4">
+            <h2 class="fw-bold mb-1"><i class="bi bi-calendar2-check text-primary me-2"></i>Book Your Service</h2>
+            <p class="text-muted mb-0">Fill in the details below to schedule your cleaning appointment.</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-5">
+                <div class="card shadow-sm border-0 card-hover h-100">
+                    <div class="card-header bg-primary text-white py-3">
+                        <h5 class="card-title mb-0"><i class="bi bi-info-circle me-2"></i>Service Summary</h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <h4 class="fw-bold text-primary mb-3">{{ service.name }}</h4>
+                        <p class="text-muted mb-4">{{ service.description }}</p>
+                        {% if service.duration %}
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="bi bi-clock text-secondary me-2 fs-5"></i>
+                            <span class="text-secondary">Duration: <strong>{{ service.duration }}</strong></span>
+                        </div>
+                        {% endif %}
+                        <hr class="my-4">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="text-muted">Service Price</span>
+                            <span class="fs-5">₹{{ '%.0f'|format(service.price) }}</span>
+                        </div>
+                        <hr class="my-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="fw-bold fs-5">Total</span>
+                            <span class="fw-bold text-primary fs-2">₹{{ '%.0f'|format(service.price) }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-7">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-light py-3">
+                        <h5 class="card-title mb-0"><i class="bi bi-pencil-square text-primary me-2"></i>Booking Details</h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <form method="POST" action="{{ url_for('booking', service_id=service.id) }}" novalidate>
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-6">
+                                    <label for="booking_date" class="form-label fw-semibold">
+                                        <i class="bi bi-calendar-event me-1 text-primary"></i>Booking Date <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="date" class="form-control form-control-lg" id="booking_date"
+                                           name="booking_date" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="booking_time" class="form-label fw-semibold">
+                                        <i class="bi bi-alarm me-1 text-primary"></i>Booking Time <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="time" class="form-control form-control-lg" id="booking_time"
+                                           name="booking_time" required>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="address" class="form-label fw-semibold">
+                                    <i class="bi bi-geo-alt me-1 text-primary"></i>Address <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" class="form-control form-control-lg" id="address" name="address"
+                                       placeholder="Street address, apartment, suite, etc." required>
+                            </div>
+
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-7">
+                                    <label for="city" class="form-label fw-semibold">
+                                        <i class="bi bi-buildings me-1 text-primary"></i>City <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text" class="form-control form-control-lg" id="city" name="city"
+                                           placeholder="City" required>
+                                </div>
+                                <div class="col-md-5">
+                                    <label for="postal_code" class="form-label fw-semibold">
+                                        <i class="bi bi-mailbox2 me-1 text-primary"></i>Postal Code
+                                    </label>
+                                    <input type="text" class="form-control form-control-lg" id="postal_code" name="postal_code"
+                                           placeholder="Postal / ZIP code">
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="notes" class="form-label fw-semibold">
+                                    <i class="bi bi-chat-left-text me-1 text-primary"></i>Special Notes
+                                </label>
+                                <textarea class="form-control form-control-lg" id="notes" name="notes" rows="4"
+                                          placeholder="Any special instructions, access codes, areas to focus on, etc."></textarea>
+                            </div>
+
+                            <div class="alert alert-info border-0 bg-light-info d-flex align-items-center mb-4" role="alert">
+                                <i class="bi bi-info-circle-fill me-3 fs-4 text-info"></i>
+                                <div>
+                                    <strong>Total Amount Due:</strong>
+                                    <span class="fw-bold text-primary fs-4 ms-2">₹{{ '%.0f'|format(service.price) }}</span>
+                                    <small class="text-muted d-block">Payment will be processed on the day of service.</small>
+                                </div>
+                            </div>
+
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary btn-lg fw-bold py-3">
+                                    <i class="bi bi-check2-circle me-2"></i>Confirm Booking
+                                </button>
+                                <a href="{{ url_for('services') }}" class="btn btn-outline-secondary btn-lg">
+                                    <i class="bi bi-arrow-left me-2"></i>Back to Services
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const dateInput = document.getElementById('booking_date');
+        const today = new Date().toISOString().split('T')[0];
+        dateInput.min = today;
+    });
+</script>
+{% endblock %}
+{% endblock %}

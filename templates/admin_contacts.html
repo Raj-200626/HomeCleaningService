@@ -1,0 +1,202 @@
+{% extends "base.html" %}
+
+{% block title %}Contact Messages{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <h2 class="mb-1" style="color: #1e3a5f; font-weight: 700;">Contact Messages</h2>
+    <p class="text-muted mb-0">View and manage messages from the contact form.</p>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card stat-card h-100">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="stat-icon me-3" style="background-color: #e3f2fd; color: #1976d2;">
+                        <i class="bi bi-envelope-fill"></i>
+                    </div>
+                    <div>
+                        <h6 class="text-muted mb-1" style="font-size: 0.85rem;">Total Messages</h6>
+                        <h3 class="mb-0" style="font-weight: 700; color: #1e3a5f;">{{ contacts|length }}</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card stat-card h-100">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="stat-icon me-3" style="background-color: #ffebee; color: #d32f2f;">
+                        <i class="bi bi-envelope-exclamation-fill"></i>
+                    </div>
+                    <div>
+                        <h6 class="text-muted mb-1" style="font-size: 0.85rem;">Unread</h6>
+                        <h3 class="mb-0" style="font-weight: 700; color: #1e3a5f;">{{ contacts|selectattr('is_read', 'equalto', false)|list|length }}</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card stat-card h-100">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="stat-icon me-3" style="background-color: #e8f5e9; color: #388e3c;">
+                        <i class="bi bi-envelope-check-fill"></i>
+                    </div>
+                    <div>
+                        <h6 class="text-muted mb-1" style="font-size: 0.85rem;">Read</h6>
+                        <h3 class="mb-0" style="font-weight: 700; color: #1e3a5f;">{{ contacts|selectattr('is_read', 'equalto', true)|list|length }}</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card table-card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0" style="color: #1e3a5f; font-weight: 600;">
+            <i class="bi bi-inbox-fill me-2"></i>All Messages
+        </h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Subject</th>
+                        <th>Message</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if contacts %}
+                        {% for contact in contacts %}
+                            <tr {% if not contact.is_read %}style="background-color: #fff8e1;"{% endif %}>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="rounded-circle me-2 {% if contact.is_read %}bg-secondary bg-opacity-10{% else %}bg-primary bg-opacity-15{% endif %}" 
+                                             style="width: 38px; height: 38px; display: flex; align-items: center; justify-content: center;">
+                                            <span class="{% if contact.is_read %}text-secondary{% else %}text-primary{% endif %}" style="font-size: 0.85rem; font-weight: 600;">
+                                                {{ contact.name[0] }}
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <p class="mb-0 fw-medium" style="font-size: 0.9rem;">
+                                                {{ contact.name }}
+                                                {% if not contact.is_read %}
+                                                    <span class="badge bg-danger ms-1" style="font-size: 0.6rem;">NEW</span>
+                                                {% endif %}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <a href="mailto:{{ contact.email }}" style="font-size: 0.9rem; color: #1976d2;">{{ contact.email }}</a>
+                                </td>
+                                <td>
+                                    <span class="fw-medium" style="font-size: 0.9rem;">
+                                        {{ contact.subject if contact.subject else '<em class="text-muted">No subject</em>' }}
+                                    </span>
+                                </td>
+                                <td style="max-width: 350px;">
+                                    <p class="mb-0 text-muted" style="font-size: 0.85rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                        {{ contact.message[:120] }}{% if contact.message|length > 120 %}...{% endif %}
+                                    </p>
+                                    <button class="btn btn-link btn-sm p-0 mt-1" type="button" data-bs-toggle="modal" data-bs-target="#messageModal{{ contact.id }}" style="font-size: 0.75rem;">
+                                        <i class="bi bi-eye me-1"></i>View full message
+                                    </button>
+                                </td>
+                                <td style="font-size: 0.85rem;">
+                                    {{ contact.created_at.strftime('%b %d, %Y') }}
+                                    <br><span class="text-muted">{{ contact.created_at.strftime('%I:%M %p') }}</span>
+                                </td>
+                                <td>
+                                    {% if contact.is_read %}
+                                        <span class="badge bg-success" style="padding: 0.4rem 0.7rem; border-radius: 20px; font-size: 0.75rem;">
+                                            <i class="bi bi-check-all me-1"></i>Read
+                                        </span>
+                                    {% else %}
+                                        <span class="badge bg-warning text-dark" style="padding: 0.4rem 0.7rem; border-radius: 20px; font-size: 0.75rem;">
+                                            <i class="bi bi-dot me-1"></i>Unread
+                                        </span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <form method="POST" action="{{ url_for('toggle_contact_read', contact_id=contact.id) }}">
+                                        <button type="submit" class="btn btn-sm {% if contact.is_read %}btn-outline-warning{% else %}btn-outline-success{% endif %}" 
+                                                style="border-radius: 6px; font-size: 0.75rem;">
+                                            {% if contact.is_read %}
+                                                <i class="bi bi-envelope me-1"></i>Mark Unread
+                                            {% else %}
+                                                <i class="bi bi-envelope-open me-1"></i>Mark Read
+                                            {% endif %}
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+
+                            <div class="modal fade" id="messageModal{{ contact.id }}" tabindex="-1" aria-labelledby="messageModalLabel{{ contact.id }}" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content" style="border-radius: 12px; border: none;">
+                                        <div class="modal-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 12px 12px 0 0;">
+                                            <h6 class="modal-title mb-0" id="messageModalLabel{{ contact.id }}">
+                                                <i class="bi bi-envelope-open me-2"></i>
+                                                {{ contact.subject if contact.subject else 'Message' }}
+                                            </h6>
+                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body p-4">
+                                            <div class="d-flex align-items-center mb-3 pb-3 border-bottom">
+                                                <div class="bg-primary bg-opacity-10 rounded-circle me-3" style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center;">
+                                                    <span class="text-primary" style="font-weight: 600;">{{ contact.name[0] }}</span>
+                                                </div>
+                                                <div>
+                                                    <p class="mb-0 fw-medium">{{ contact.name }}</p>
+                                                    <p class="mb-0 text-muted small">{{ contact.email }}</p>
+                                                </div>
+                                                <div class="ms-auto text-end">
+                                                    <p class="mb-0 text-muted small">{{ contact.created_at.strftime('%b %d, %Y') }}</p>
+                                                    <p class="mb-0 text-muted small" style="font-size: 0.75rem;">{{ contact.created_at.strftime('%I:%M %p') }}</p>
+                                                </div>
+                                            </div>
+                                            <div class="p-3 bg-light rounded" style="font-size: 0.95rem; line-height: 1.6;">
+                                                {{ contact.message }}
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer border-0 pt-0">
+                                            <form method="POST" action="{{ url_for('toggle_contact_read', contact_id=contact.id) }}" class="me-auto">
+                                                <button type="submit" class="btn btn-sm {% if contact.is_read %}btn-outline-warning{% else %}btn-outline-success{% endif %}" style="border-radius: 6px;">
+                                                    {% if contact.is_read %}<i class="bi bi-envelope me-1"></i>Mark Unread{% else %}<i class="bi bi-envelope-open me-1"></i>Mark Read{% endif %}
+                                                </button>
+                                            </form>
+                                            <a href="mailto:{{ contact.email }}" class="btn btn-primary" style="border-radius: 8px;">
+                                                <i class="bi bi-reply me-1"></i>Reply via Email
+                                            </a>
+                                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" style="border-radius: 8px;">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="7" class="text-center py-5 text-muted">
+                                <i class="bi bi-inbox mb-3" style="font-size: 2.5rem; opacity: 0.5;"></i>
+                                <p class="mb-0">No messages yet. Your inbox is empty!</p>
+                            </td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

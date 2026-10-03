@@ -1,0 +1,198 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <h2 class="mb-1" style="color: #1e3a5f; font-weight: 700;">Dashboard</h2>
+    <p class="text-muted mb-0">Welcome back! Here's what's happening with your cleaning service today.</p>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-sm-6 col-lg-4 col-xl-2">
+        <div class="card stat-card h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div class="stat-icon" style="background-color: #e3f2fd; color: #1976d2;">
+                        <i class="bi bi-calendar-check-fill"></i>
+                    </div>
+                </div>
+                <h6 class="text-muted mb-1" style="font-size: 0.85rem;">Total Bookings</h6>
+                <h3 class="mb-0" style="font-weight: 700; color: #1e3a5f;">{{ total_bookings }}</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-lg-4 col-xl-2">
+        <div class="card stat-card h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div class="stat-icon" style="background-color: #fff3cd; color: #ff9800;">
+                        <i class="bi bi-clock-fill"></i>
+                    </div>
+                </div>
+                <h6 class="text-muted mb-1" style="font-size: 0.85rem;">Pending</h6>
+                <h3 class="mb-0" style="font-weight: 700; color: #1e3a5f;">{{ pending_bookings }}</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-lg-4 col-xl-2">
+        <div class="card stat-card h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div class="stat-icon" style="background-color: #d1ecf1; color: #0c5460;">
+                        <i class="bi bi-check-circle-fill"></i>
+                    </div>
+                </div>
+                <h6 class="text-muted mb-1" style="font-size: 0.85rem;">Confirmed</h6>
+                <h3 class="mb-0" style="font-weight: 700; color: #1e3a5f;">{{ confirmed_bookings }}</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-lg-4 col-xl-2">
+        <div class="card stat-card h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div class="stat-icon" style="background-color: #d4edda; color: #155724;">
+                        <i class="bi bi-check2-all"></i>
+                    </div>
+                </div>
+                <h6 class="text-muted mb-1" style="font-size: 0.85rem;">Completed</h6>
+                <h3 class="mb-0" style="font-weight: 700; color: #1e3a5f;">{{ completed_bookings }}</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-lg-4 col-xl-2">
+        <div class="card stat-card h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div class="stat-icon" style="background-color: #e8f5e9; color: #388e3c;">
+                        <i class="bi bi-people-fill"></i>
+                    </div>
+                </div>
+                <h6 class="text-muted mb-1" style="font-size: 0.85rem;">Total Users</h6>
+                <h3 class="mb-0" style="font-weight: 700; color: #1e3a5f;">{{ total_users }}</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-lg-4 col-xl-2">
+        <div class="card stat-card h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div class="stat-icon" style="background-color: #f3e5f5; color: #7b1fa2;">
+                        <i class="bi bi-briefcase-fill"></i>
+                    </div>
+                </div>
+                <h6 class="text-muted mb-1" style="font-size: 0.85rem;">Services</h6>
+                <h3 class="mb-0" style="font-weight: 700; color: #1e3a5f;">{{ total_services }}</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-lg-4 col-xl-2">
+        <div class="card stat-card h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div class="stat-icon" style="background-color: #c8e6c9; color: #2e7d32;">
+                        <i class="bi bi-currency-rupee"></i>
+                    </div>
+                </div>
+                <h6 class="text-muted mb-1" style="font-size: 0.85rem;">Revenue</h6>
+                <h3 class="mb-0" style="font-weight: 700; color: #1e3a5f;">₹{{ "%.0f"|format(total_revenue) }}</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-lg-4 col-xl-2">
+        <div class="card stat-card h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div class="stat-icon" style="background-color: #ffebee; color: #d32f2f;">
+                        <i class="bi bi-envelope-fill"></i>
+                    </div>
+                </div>
+                <h6 class="text-muted mb-1" style="font-size: 0.85rem;">Messages</h6>
+                <h3 class="mb-0" style="font-weight: 700; color: #1e3a5f;">{{ unread_contacts }}
+                    {% if unread_contacts > 0 %}
+                        <span class="badge bg-danger" style="font-size: 0.7rem;">New</span>
+                    {% endif %}
+                </h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-12">
+        <div class="card table-card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0" style="color: #1e3a5f; font-weight: 600;"><i class="bi bi-receipt-cutoff me-2"></i>Recent Bookings</h5>
+                <a href="{{ url_for('admin_bookings') }}" class="btn btn-outline-primary btn-sm" style="border-radius: 8px;">
+                    View All <i class="bi bi-arrow-right ms-1"></i>
+                </a>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Customer</th>
+                                <th>Service</th>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Status</th>
+                                <th>Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if recent_bookings %}
+                                {% for booking in recent_bookings %}
+                                    <tr>
+                                        <td><strong>#{{ booking.id }}</strong></td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="bg-primary bg-opacity-10 rounded-circle p-2 me-2" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">
+                                                    <span class="text-primary" style="font-size: 0.8rem; font-weight: 600;">
+                                                        {{ booking.customer.full_name[0] if booking.customer else '?' }}
+                                                    </span>
+                                                </div>
+                                                <div>
+                                                    <p class="mb-0 fw-medium" style="font-size: 0.9rem;">{{ booking.customer.full_name if booking.customer else 'N/A' }}</p>
+                                                    <p class="mb-0 text-muted" style="font-size: 0.75rem;">{{ booking.customer.email if booking.customer else '' }}</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="fw-medium" style="font-size: 0.9rem;">{{ booking.service.name if booking.service else 'N/A' }}</span>
+                                        </td>
+                                        <td><span style="font-size: 0.9rem;">{{ booking.booking_date.strftime('%b %d, %Y') }}</span></td>
+                                        <td><span style="font-size: 0.9rem;">{{ booking.booking_time.strftime('%I:%M %p') }}</span></td>
+                                        <td>
+                                            <span class="badge badge-{{ booking.status }}" style="padding: 0.4rem 0.7rem; border-radius: 20px; font-size: 0.75rem; font-weight: 500; text-transform: capitalize;">
+                                                {{ booking.status }}
+                                            </span>
+                                        </td>
+                                        <td><strong style="color: #1e3a5f;">₹{{ "%.0f"|format(booking.total_price) }}</strong></td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="7" class="text-center py-5 text-muted">
+                                        <i class="bi bi-inbox mb-3" style="font-size: 2.5rem; opacity: 0.5;"></i>
+                                        <p class="mb-0">No recent bookings found.</p>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
