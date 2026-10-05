@@ -561,7 +561,8 @@ def init_db():
         seed_services()
         seed_admin()
         print('Database initialized successfully.')
-
+        with app.app_context():
+            db.create_all()
 
 if __name__ == '__main__':
     init_db()
