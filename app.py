@@ -110,6 +110,8 @@ class PasswordResetToken(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     is_used = db.Column(db.Boolean, default=False)
     user = db.relationship('User', backref=db.backref('reset_tokens', lazy=True))
+    with app.app_context():
+        db.create_all()
 
     def is_valid(self):
         return not self.is_used and datetime.utcnow() < self.expires_at
@@ -561,8 +563,6 @@ def init_db():
         seed_services()
         seed_admin()
         print('Database initialized successfully.')
-        with app.app_context():
-            db.create_all()
 
 if __name__ == '__main__':
     init_db()
